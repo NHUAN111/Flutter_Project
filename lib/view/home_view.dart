@@ -30,22 +30,18 @@ class _HomeViewState extends State<HomeView> {
             const SizedBox(width: 10), // Khoảng cách giữa logo và ô tìm kiếm
             Expanded(
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 18), // Khoảng cách từ border đến input
+                padding: const EdgeInsets.symmetric(horizontal: 18),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius:
-                      BorderRadius.circular(8), // Bo tròn border của ô tìm kiếm
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: const TextField(
                   decoration: InputDecoration(
                     hintText: 'Tìm kiếm...',
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets
-                        .zero, // Loại bỏ padding nội dung bên trong ô tìm kiếm
+                    contentPadding: EdgeInsets.zero,
                   ),
-                  style:
-                      TextStyle(fontSize: 14), // Điều chỉnh kích thước font chữ
+                  style: TextStyle(fontSize: 14),
                 ),
               ),
             ),

@@ -9,8 +9,6 @@ class UserViewModel with ChangeNotifier {
       Constant.USER_PREFERENCES,
       (json) => UserModel.fromJson(json),
     );
-    return UserModel(
-      customerName: userModel.toString(),
-    );
+    return UserModel(customerName: userModel?.customerName.toString());
   }
 }

@@ -24,14 +24,8 @@ class _CategoriesViewState extends State<CategoriesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Danh mục sản phẩm',
-          style: TextStyle(
-            fontSize: 18, // Kích thước chữ
-            fontWeight: FontWeight.normal, // Độ đậm của chữ
-            color: Colors.black, // Màu chữ
-          ),
-        ),
+        title: const Text('Danh mục'),
+        leading: const Icon(Icons.food_bank_rounded),
       ),
       body: Center(
         child: FutureBuilder<List<CategoryModel>>(
@@ -45,6 +39,7 @@ class _CategoriesViewState extends State<CategoriesView> {
                   return GestureDetector(
                     onTap: () {
                       // Xử lý khi nhấn vào danh mục
+                      print(category.categoryId);
                     },
                     child: Card(
                       elevation: 2, // Độ nâng cao của thẻ

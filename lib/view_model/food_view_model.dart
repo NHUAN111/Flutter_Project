@@ -69,4 +69,18 @@ class FoodViewModel with ChangeNotifier {
     }
     return null;
   }
+
+  Future<List<FoodModel>?> foodSameCategory(int foodId) async {
+    try {
+      _food = await _repository.fechFoodSameCategory(foodId);
+      notifyListeners();
+      return _food;
+    } catch (error) {
+      // print('Lỗi khi load dữ liệu chi tiết food: $error');
+      if (kDebugMode) {
+        print('Food same category $error');
+      }
+    }
+    return null;
+  }
 }

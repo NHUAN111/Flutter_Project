@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_specialized_1/model/food_mode.dart';
+import 'package:project_specialized_1/view/Food/food_detail_view.dart';
 import 'package:project_specialized_1/view_model/food_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -64,7 +65,9 @@ class _FoodDiscountViewState extends State<FoodDiscountView> {
                         const SizedBox(height: 8),
                         Text(
                           food.foodName,
-                          style: const TextStyle(fontSize: 16),
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -90,7 +93,13 @@ class _FoodDiscountViewState extends State<FoodDiscountView> {
                         ),
                         TextButton(
                           onPressed: () {
-                            print('Đã chọn mua ${food.foodId}');
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    FoodDetailView(foodId: food.foodId),
+                              ),
+                            );
                           },
                           style: ButtonStyle(
                             foregroundColor:

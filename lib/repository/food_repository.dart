@@ -70,7 +70,7 @@ class FoodRepository {
 
   Future<FoodModel> fechFoodDetail(int foodId) async {
     var requestData = {
-      'food_id': foodId,
+      'food_id': foodId.toString(),
     };
     final response =
         await apiServices.getPostApiResponse(AppUrl.foodDetailUrl, requestData);
@@ -78,13 +78,27 @@ class FoodRepository {
     Map<String, dynamic> data = json.decode(response.body);
     if (data['status_code'] == 200) {
       FoodModel foodDetailData = FoodModel.fromJson(data['data']);
-
-      // SharedPrefsManager.setData(
-      //     Constant.FOOD_ID_PREFERENCES, foodId.toString() as BaseModel);
-
       return foodDetailData;
     } else {
       throw Exception('Failed to load food detail');
+    }
+  }
+
+  Future<List<FoodModel>> fechFoodSameCategory(int foodId) async {
+    var requestData = {
+      'food_id': foodId.toString(),
+    };
+    final response = await apiServices.getPostApiResponse(
+        AppUrl.foodSameCategoryUrl, requestData);
+
+    Map<String, dynamic> data = json.decode(response.body);
+    if (data['status_code'] == 200) {
+      List<dynamic> jsonResponse = json.decode(response.body)['data'];
+      return jsonResponse
+          .map((foodSameCategory) => FoodModel.fromJson(foodSameCategory))
+          .toList();
+    } else {
+      throw Exception('Failed to load food same category');
     }
   }
 }

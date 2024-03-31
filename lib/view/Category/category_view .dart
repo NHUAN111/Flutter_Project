@@ -42,6 +42,7 @@ class _CategoriesViewState extends State<CategoriesView> {
                       print(category.categoryId);
                     },
                     child: Card(
+                      color: Colors.white,
                       elevation: 2, // Độ nâng cao của thẻ
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,

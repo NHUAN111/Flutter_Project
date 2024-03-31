@@ -20,8 +20,7 @@ class _HomeViewState extends State<HomeView> {
   final List<Widget> _pages = [
     const HomeViewPage(),
     const CategoriesViewPage(),
-    const OrdersViewPage(),
-    const FavoritesViewPage(),
+    const CartViewPage(),
     const ProfileViewPage(),
   ];
 
@@ -76,11 +75,7 @@ class _HomeViewState extends State<HomeView> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_bag),
-            label: 'Đơn hàng',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Yêu thích',
+            label: 'Giỏ hàng',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -183,7 +178,6 @@ class HomeViewPage extends StatelessWidget {
               FoodDiscountView(), // Widget tiếp theo sau SliderView
             ],
           ),
-
           // View food all
           SizedBox(height: 30),
           Column(
@@ -231,25 +225,14 @@ class CategoriesViewPage extends StatelessWidget {
   }
 }
 
-class OrdersViewPage extends StatelessWidget {
-  const OrdersViewPage({Key? key}) : super(key: key);
+class CartViewPage extends StatelessWidget {
+  const CartViewPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('Đơn hàng'),
+      child: Text('Giỏ hàng'),
     ); // Thay thế Center(child: Text('Đơn hàng')) bằng OrderPage()
-  }
-}
-
-class FavoritesViewPage extends StatelessWidget {
-  const FavoritesViewPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Yêu thích'),
-    );
   }
 }
 

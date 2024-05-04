@@ -1,4 +1,4 @@
-import 'package:project_specialized_1/data/SharedPrefsManager/base_model.dart';
+import 'package:project_specialized_1/data/LocalData/SharedPrefsManager/base_model.dart';
 
 class FoodModel extends BaseModel {
   final int foodId;
@@ -12,12 +12,14 @@ class FoodModel extends BaseModel {
   final String foodImg;
   final int foodStatus;
   final int totalOrders;
+  String? foodPriceDiscount;
 
   FoodModel(
       {required this.foodId,
       required this.categoryId,
       required this.foodName,
       required this.foodPrice,
+      this.foodPriceDiscount,
       required this.foodDesc,
       required this.foodContent,
       required this.foodCondition,
@@ -32,6 +34,7 @@ class FoodModel extends BaseModel {
       categoryId: json['category_id'],
       foodName: json['food_name'],
       foodPrice: json['food_price'].toString(),
+      foodPriceDiscount: json['food_price_discount'].toString(),
       foodDesc: json['food_desc'],
       foodContent: json['food_content'],
       foodCondition: json['food_condition'],

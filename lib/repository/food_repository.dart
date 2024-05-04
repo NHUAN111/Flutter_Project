@@ -1,12 +1,9 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:project_specialized_1/constant/constant.dart';
-import 'package:project_specialized_1/data/SharedPrefsManager/base_model.dart';
+
 import 'package:project_specialized_1/data/network/BaseAPIServices.dart';
 import 'package:project_specialized_1/data/network/NetWorkApiServices.dart';
-import 'package:project_specialized_1/model/food_mode.dart';
+import 'package:project_specialized_1/model/food_model.dart';
 import 'package:project_specialized_1/res/app_url.dart';
-import 'package:project_specialized_1/data/SharedPrefsManager/shared_preferences.dart';
 
 class FoodRepository {
   BaseApiServices apiServices = NetWorkApiServices();

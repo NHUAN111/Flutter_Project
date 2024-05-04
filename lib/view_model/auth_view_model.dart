@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:project_specialized_1/constant/constant.dart';
-import 'package:project_specialized_1/data/SharedPrefsManager/shared_preferences.dart';
+import 'package:project_specialized_1/data/LocalData/SharedPrefsManager/shared_preferences.dart';
 import 'package:project_specialized_1/model/user_model.dart';
 import 'package:project_specialized_1/repository/auth_repository.dart';
 import 'package:project_specialized_1/utils/routes/routes_name.dart';
@@ -14,13 +14,13 @@ class AuthViewModel with ChangeNotifier {
     try {
       await _myRepo.loginUser(name, password);
       print('Đăng nhập thành công');
-      Navigator.pushNamed(context, RoutesName.category);
-      UserModel userModel = UserModel(
-          customerId: null,
-          customerName: name,
-          customerPass: null,
-          customerPhone: null);
-      SharedPrefsManager.setData(Constant.USER_PREFERENCES, userModel);
+      Navigator.pushNamed(context, RoutesName.home);
+      // UserModel userModel = UserModel(
+      //     customerId: null,
+      //     customerName: name,
+      //     customerPass: null,
+      //     customerPhone: null);
+      // SharedPrefsManager.setData(Constant.USER_PREFERENCES, userModel);
     } catch (error) {
       print('Đăng nhập thất bại: $error');
       if (kDebugMode) {
@@ -39,7 +39,7 @@ class AuthViewModel with ChangeNotifier {
     try {
       await _myRepo.registerUser(userModel);
       print('Đăng ký thành công');
-      Navigator.pushNamed(context, RoutesName.category);
+      Navigator.pushNamed(context, RoutesName.home);
     } catch (error) {
       print('Đăng ký thất bại: $error');
       if (kDebugMode) {

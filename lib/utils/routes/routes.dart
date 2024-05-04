@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:project_specialized_1/utils/routes/routes_name.dart';
-import 'package:project_specialized_1/view/Food/food_detail_view.dart';
-import 'package:project_specialized_1/view/LoginOrRegister/login_view.dart';
-import 'package:project_specialized_1/view/LoginOrRegister/register_view.dart';
-import 'package:project_specialized_1/view/Splash/splash_view.dart';
-import 'package:project_specialized_1/view/Category/category_view%20.dart';
-import 'package:project_specialized_1/view/home_view.dart';
+import 'package:project_specialized_1/views/Cart/cart_view.dart';
+import 'package:project_specialized_1/views/Coupon/coupon_view.dart';
+import 'package:project_specialized_1/views/LoginOrRegister/login_view.dart';
+import 'package:project_specialized_1/views/LoginOrRegister/register_view.dart';
+import 'package:project_specialized_1/views/Order/order_page_view.dart';
+import 'package:project_specialized_1/views/Splash/splash_view.dart';
+import 'package:project_specialized_1/views/Category/category_view%20.dart';
+import 'package:project_specialized_1/views/home_view.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings routeSettings) {
@@ -30,9 +32,17 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) => const SplashView());
 
-      // case RoutesName.detailFood:
-      //   return MaterialPageRoute(
-      //       builder: (BuildContext context) => const FoodDetailView());
+      case RoutesName.cart:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const CartView());
+
+      case RoutesName.coupon:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const CouponView());
+
+      case RoutesName.order:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const OrderViews());
 
       default:
         return MaterialPageRoute(

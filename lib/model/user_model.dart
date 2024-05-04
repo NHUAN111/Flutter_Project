@@ -1,4 +1,4 @@
-import 'package:project_specialized_1/data/SharedPrefsManager/base_model.dart';
+import 'package:project_specialized_1/data/LocalData/SharedPrefsManager/base_model.dart';
 
 class UserModel extends BaseModel {
   int? customerId;
@@ -28,6 +28,7 @@ class UserModel extends BaseModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      'customer_id': customerId,
       'customer_name': customerName,
       'customer_pass': customerPass,
     };

@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:project_specialized_1/model/food_mode.dart';
+import 'package:project_specialized_1/model/food_model.dart';
 import 'package:project_specialized_1/repository/food_repository.dart';
-import 'package:project_specialized_1/utils/routes/routes_name.dart';
 
 class FoodViewModel with ChangeNotifier {
   final FoodRepository _repository = FoodRepository();

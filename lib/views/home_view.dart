@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:project_specialized_1/view/Category/category_view%20.dart';
-import 'package:project_specialized_1/view/Food/food_all_view.dart';
-import 'package:project_specialized_1/view/Food/food_best_seller_view.dart';
-import 'package:project_specialized_1/view/Food/food_discount_view.dart';
-import 'package:project_specialized_1/view/Food/food_new_view.dart';
-import 'package:project_specialized_1/view/Slider/slider_view.dart';
+import 'package:project_specialized_1/utils/routes/routes_name.dart';
+import 'package:project_specialized_1/views/Category/category_view%20.dart';
+import 'package:project_specialized_1/views/Favourite/favourite_view.dart';
+import 'package:project_specialized_1/views/Food/food_all_view.dart';
+import 'package:project_specialized_1/views/Food/food_best_seller_view.dart';
+import 'package:project_specialized_1/views/Food/food_discount_view.dart';
+import 'package:project_specialized_1/views/Food/food_new_view.dart';
+import 'package:project_specialized_1/views/Slider/slider_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -20,7 +22,7 @@ class _HomeViewState extends State<HomeView> {
   final List<Widget> _pages = [
     const HomeViewPage(),
     const CategoriesViewPage(),
-    const CartViewPage(),
+    const FavouroteViewPage(),
     const ProfileViewPage(),
   ];
 
@@ -51,7 +53,7 @@ class _HomeViewState extends State<HomeView> {
             ),
             IconButton(
               onPressed: () {
-                // Xử lý khi nhấn vào icon giỏ hàng
+                Navigator.pushNamed(context, RoutesName.cart);
               },
               icon: const Icon(Icons.shopping_cart),
             ),
@@ -74,8 +76,8 @@ class _HomeViewState extends State<HomeView> {
             label: 'Danh mục',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag),
-            label: 'Giỏ hàng',
+            icon: Icon(Icons.favorite),
+            label: 'Yêu thích',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -105,7 +107,6 @@ class HomeViewPage extends StatelessWidget {
         children: const [
           SliderView(),
           SizedBox(height: 5),
-
           // View comming soon
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,98 +114,81 @@ class HomeViewPage extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                 child: Text(
-                  'GỢI Ý CHO BẠN ',
+                  'Gợi Ý Cho Bạn ',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-            ],
-          ),
 
-          // View Food best seller
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+              // FoodBestSellerView
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                 child: Text(
-                  'BÁN CHẠY NHẤT ', // Tiêu đề cho FoodBestSellerView
+                  'Bán Chạy Nhất ',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              FoodBestSellerView(), // Widget tiếp theo sau SliderView
-            ],
-          ),
-          SizedBox(height: 20),
+              FoodBestSellerView(),
 
-          // View food new
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+              // Food New
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                 child: Text(
-                  'MÓN MỚI ', // Tiêu đề cho FoodBestSellerView
+                  'Món Mới ',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              FoodNewView(), // Widget tiếp theo sau SliderView
-            ],
-          ),
+              FoodNewView(),
 
-          // View food discount
-          SizedBox(height: 20),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+              // Food Discount
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                 child: Text(
-                  'MÓN GIẢM GIÁ ', // Tiêu đề cho FoodBestSellerView
+                  'Món Giảm Giá ',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              FoodDiscountView(), // Widget tiếp theo sau SliderView
-            ],
-          ),
-          // View food all
-          SizedBox(height: 30),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              FoodDiscountView(),
+
+              // All Food
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'TẤT CẢ MÓN',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        'Tất Cả Món',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(width: 140),
+                      Text(
+                        'Xem tất cả',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.blueAccent,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(width: 140),
-                  Text(
-                    'Xem tất cả',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                      color: Colors.blueAccent,
-                    ),
-                  ),
+                  FoodAllView(),
                 ],
-              ),
-              FoodAllView(),
+              )
             ],
           ),
         ],
@@ -219,20 +203,19 @@ class CategoriesViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body:
-          CategoriesView(), // Nhúng CategoriesView vào trong body của CategoriesViewPage
+      body: CategoriesView(),
     );
   }
 }
 
-class CartViewPage extends StatelessWidget {
-  const CartViewPage({Key? key}) : super(key: key);
+class FavouroteViewPage extends StatelessWidget {
+  const FavouroteViewPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Giỏ hàng'),
-    ); // Thay thế Center(child: Text('Đơn hàng')) bằng OrderPage()
+    return const Scaffold(
+      body: FavouriteView(),
+    );
   }
 }
 

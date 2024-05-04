@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:project_specialized_1/model/food_mode.dart';
-import 'package:project_specialized_1/view/Food/food_detail_view.dart';
+import 'package:project_specialized_1/model/food_model.dart';
+import 'package:project_specialized_1/views/Food/food_detail_view.dart';
 import 'package:project_specialized_1/view_model/food_view_model.dart';
+import 'package:project_specialized_1/widgets/format_price.dart';
 import 'package:provider/provider.dart';
 
-class FoodNewView extends StatefulWidget {
-  const FoodNewView({Key? key}) : super(key: key);
+class FoodDiscountView extends StatefulWidget {
+  const FoodDiscountView({Key? key}) : super(key: key);
 
   @override
-  _FoodNewViewState createState() => _FoodNewViewState();
+  _FoodDiscountViewState createState() => _FoodDiscountViewState();
 }
 
-class _FoodNewViewState extends State<FoodNewView> {
+class _FoodDiscountViewState extends State<FoodDiscountView> {
   late Future<List<FoodModel>> futureFoods;
 
   @override
   void initState() {
     super.initState();
     final viewModel = Provider.of<FoodViewModel>(context, listen: false);
-    futureFoods = viewModel.foodNew();
+    futureFoods = viewModel.foodDiscount();
   }
 
   @override
@@ -48,11 +49,12 @@ class _FoodNewViewState extends State<FoodNewView> {
                   padding: const EdgeInsets.all(4.0),
                   child: Card(
                     elevation: 2, // Độ nâng cao của thẻ
+                    color: Colors.white,
                     child: Stack(
                       children: [
                         Container(
                           height: 130,
-                          width: 140,
+                          width: 160,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             image: DecorationImage(
@@ -84,16 +86,38 @@ class _FoodNewViewState extends State<FoodNewView> {
                                   food.foodName,
                                   style: const TextStyle(fontSize: 16),
                                 ),
+                                Text(
+                                  PriceFormatter.formatPriceFromString(
+                                      food.foodPriceDiscount!),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      '\$${food.foodPrice}', // Hiển thị giá trị
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                    Stack(
+                                      children: [
+                                        Text(
+                                          PriceFormatter.formatPriceFromString(
+                                              food.foodPrice),
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                        Positioned(
+                                          left: 0,
+                                          right: 0,
+                                          top: 10,
+                                          child: Container(
+                                            height: 1,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     const SizedBox(
                                       width: 30.0,

@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:project_specialized_1/constant/constant.dart';
-import 'package:project_specialized_1/data/SharedPrefsManager/shared_preferences.dart';
 import 'package:project_specialized_1/data/network/BaseAPIServices.dart';
 import 'package:project_specialized_1/data/network/NetWorkApiServices.dart';
 import 'package:project_specialized_1/model/user_model.dart';
 import 'package:project_specialized_1/res/app_url.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../data/LocalData/SharedPrefsManager/shared_preferences.dart';
 
 class Authrepository {
   BaseApiServices apiServices = NetWorkApiServices();
@@ -26,10 +26,10 @@ class Authrepository {
         List<dynamic> userData = data['data'];
         UserModel user = UserModel.fromJson(userData[0]);
 
-        // Lưu dữ liệu người dùng vào SharedPreferences
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString(
-            Constant.USER_PREFERENCES, jsonEncode(user.toJson()));
+        // Khởi tạo SharedPreferences
+        await SharedPrefsManager.init();
+        await SharedPrefsManager.setDataUser(Constant.USER_PREFERENCES, user);
+        print('Data saved');
         return user;
       } else {
         throw Exception(data['message']);

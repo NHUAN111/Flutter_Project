@@ -44,28 +44,29 @@ class _SliderViewState extends State<SliderView> {
               ),
               CarouselSlider(
                 items: sliders.map((slider) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return Container(
-                        height: 200,
-                        width: MediaQuery.of(context).size.width,
-                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8.0),
-                          image: DecorationImage(
-                            image: NetworkImage(slider.sliderImg),
-                            fit: BoxFit.scaleDown,
+                  return Card(
+                    elevation: 3,
+                    child: Builder(
+                      builder: (BuildContext context) {
+                        return Container(
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8.0),
+                            image: DecorationImage(
+                              image: NetworkImage(slider.sliderImg),
+                              fit: BoxFit.fill,
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   );
                 }).toList(),
                 options: CarouselOptions(
                   autoPlay: true,
                   enlargeCenterPage: true,
-                  aspectRatio: 16 / 9,
+                  aspectRatio: 16 / 8,
                   onPageChanged: (index, reason) {
                     setState(() {
                       _currentIndex = index;

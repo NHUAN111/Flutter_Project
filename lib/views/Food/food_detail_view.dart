@@ -1,8 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:project_specialized_1/model/food_mode.dart';
+import 'package:project_specialized_1/constant/constant.dart';
+import 'package:project_specialized_1/model/cart_model.dart';
+import 'package:project_specialized_1/model/food_model.dart';
+import 'package:project_specialized_1/view_model/cart_view_model.dart';
 import 'package:project_specialized_1/view_model/food_view_model.dart';
 import 'package:project_specialized_1/widgets/format_price.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FoodDetailView extends StatefulWidget {
   final int foodId;
@@ -13,6 +19,7 @@ class FoodDetailView extends StatefulWidget {
 }
 
 class _FoodDetailViewState extends State<FoodDetailView> {
+  late CartModel cartModel;
   late Future<FoodModel?> futureFood;
   late Future<List<FoodModel>?> futureFoodSame;
   late FoodModel? foodDetail; // Biến instance để lưu trữ foodDetail
@@ -21,7 +28,9 @@ class _FoodDetailViewState extends State<FoodDetailView> {
   void initState() {
     super.initState();
     final viewModel = Provider.of<FoodViewModel>(context, listen: false);
+
     futureFoodSame = viewModel.foodSameCategory(widget.foodId);
+
     futureFood = viewModel.foodDetail(widget.foodId).then((value) {
       setState(() {
         foodDetail = value;
@@ -118,8 +127,27 @@ class _FoodDetailViewState extends State<FoodDetailView> {
                         minimumSize: const Size(350, 46),
                         elevation: 3,
                       ),
-                      onPressed: () {
-                        // Xử lý sau
+                      onPressed: () async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        String? userData =
+                            prefs.getString(Constant.USER_PREFERENCES);
+                        int? idCustomer;
+                        if (userData != null) {
+                          Map<String, dynamic> userMap = jsonDecode(userData);
+                          idCustomer = userMap['customer_id'];
+                        }
+                        final viewModelCart =
+                            Provider.of<CartViewModel>(context, listen: false);
+                        cartModel = CartModel(
+                            idFood: foodDetail!.foodId,
+                            customerId: idCustomer!,
+                            name: foodDetail!.foodName,
+                            price: foodDetail!.foodPrice,
+                            imageUrl: foodDetail!.foodImg,
+                            quantity: 1);
+
+                        viewModelCart.addToCart(cartModel);
                       },
                       child: const Text(
                         "Thêm vào giỏ hàng",
@@ -263,7 +291,9 @@ class _FoodDetailViewState extends State<FoodDetailView> {
                                                           .spaceAround,
                                                   children: [
                                                     Text(
-                                                      '\$${food.foodPrice}',
+                                                      PriceFormatter
+                                                          .formatPriceFromString(
+                                                              food.foodPrice),
                                                       style: const TextStyle(
                                                         fontSize: 14,
                                                         fontWeight:

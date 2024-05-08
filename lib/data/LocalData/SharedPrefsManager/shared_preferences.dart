@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:project_specialized_1/data/LocalData/SharedPrefsManager/base_model.dart';
 import 'package:project_specialized_1/model/coupon_model.dart';
+import 'package:project_specialized_1/model/feeship_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../model/user_model.dart';

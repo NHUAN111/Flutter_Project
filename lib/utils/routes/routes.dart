@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:project_specialized_1/utils/routes/routes_name.dart';
 import 'package:project_specialized_1/views/Cart/cart_view.dart';
 import 'package:project_specialized_1/views/Coupon/coupon_view.dart';
+import 'package:project_specialized_1/views/Feeship/delivery_view.dart';
+import 'package:project_specialized_1/views/Feeship/feeship_view.dart';
 import 'package:project_specialized_1/views/LoginOrRegister/login_view.dart';
 import 'package:project_specialized_1/views/LoginOrRegister/register_view.dart';
 import 'package:project_specialized_1/views/Order/order_page_view.dart';
@@ -43,6 +45,14 @@ class Routes {
       case RoutesName.order:
         return MaterialPageRoute(
             builder: (BuildContext context) => const OrderViews());
+
+      case RoutesName.feeship:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const FeeshipView());
+
+      case RoutesName.addressDelivery:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const DeliveryView());
 
       default:
         return MaterialPageRoute(

@@ -7,8 +7,8 @@ class PriceFormatter {
 
     // Định dạng giá tiền
     final formatter = NumberFormat.currency(
-      locale: 'vi', // Chọn ngôn ngữ và đơn vị tiền tệ của bạn ở đây
-      symbol: 'đ', // Để rỗng nếu bạn muốn không có ký hiệu tiền tệ
+      locale: 'vi', // Chọn ngôn ngữ và đơn vị tiền tệ  ở đây
+      symbol: 'đ',
     );
 
     return formatter.format(price);

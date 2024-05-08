@@ -10,6 +10,8 @@ import 'package:project_specialized_1/widgets/format_price.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../widgets/toast.dart';
+
 class FoodDetailView extends StatefulWidget {
   final int foodId;
   const FoodDetailView({Key? key, required this.foodId}) : super(key: key);
@@ -128,6 +130,7 @@ class _FoodDetailViewState extends State<FoodDetailView> {
                         elevation: 3,
                       ),
                       onPressed: () async {
+                        // Xử lý thêm sản phẩm vào giỏ hàng
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
                         String? userData =
@@ -148,6 +151,8 @@ class _FoodDetailViewState extends State<FoodDetailView> {
                             quantity: 1);
 
                         viewModelCart.addToCart(cartModel);
+                        BaseToast.showSuccess(
+                            context, 'Thành công', 'Đã thêm vào giỏ hàng');
                       },
                       child: const Text(
                         "Thêm vào giỏ hàng",

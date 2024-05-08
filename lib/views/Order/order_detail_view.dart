@@ -15,9 +15,10 @@ class OrderDetailView extends StatefulWidget {
 
 class _OrderDetailViewState extends State<OrderDetailView> {
   late Future<List<OrdersDetailModel>> futureOrderDetail;
-  double total = 0;
-  String couponPrice = '';
-  String feeShip = '';
+  double subtotal = 0.0;
+  double total = 0.0;
+  double couponPrice = 0.0;
+  double feeShip = 0.0;
   @override
   void initState() {
     super.initState();
@@ -29,16 +30,28 @@ class _OrderDetailViewState extends State<OrderDetailView> {
     futureOrderDetail = viewModel.fechOrderDetail(widget.orderCode);
     final orderDetail = await viewModel.fechOrderDetail(widget.orderCode);
     setState(() {
-      total = calculateTotal(orderDetail);
+      subtotal = calculateTotal(orderDetail);
+      feeShip = double.parse(orderDetail.first.order!.orderFeeShip!);
+      couponPrice = double.parse(orderDetail.first.order!.couponPrice!);
+      print(couponPrice);
+      if (couponPrice < 100) {
+        double priceCoupon = (total * couponPrice) / 100;
+        total = (subtotal - priceCoupon) + feeShip;
+      } else if (couponPrice > 100) {
+        total = (subtotal - couponPrice) + feeShip;
+      } else if (couponPrice == 0.0) {
+        total = subtotal + feeShip;
+      }
+      print(subtotal);
     });
   }
 
   double calculateTotal(List<OrdersDetailModel> orderDetail) {
-    total = 0;
+    subtotal = 0;
     for (var orderDetail in orderDetail) {
-      total += orderDetail.totalPrice;
+      subtotal += orderDetail.totalPrice;
     }
-    return total;
+    return subtotal;
   }
 
   @override
@@ -124,18 +137,18 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                     itemCount: orderDetail.length,
                     itemBuilder: (context, index) {
                       final item = orderDetail[index];
-                      feeShip = item.order!.orderFeeShip!;
-
+                      feeShip = double.parse(item.order!.orderFeeShip!);
                       return Padding(
-                        padding: const EdgeInsets.all(10),
+                        padding:
+                            const EdgeInsets.only(top: 5, left: 10, right: 10),
                         child: Card(
                           elevation: 2,
                           color: Colors.white,
                           child: Row(
                             children: [
                               Container(
-                                height: 130,
-                                width: 140,
+                                height: 100,
+                                width: 110,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   image: DecorationImage(
@@ -145,53 +158,51 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                                 ),
                               ),
                               const SizedBox(width: 10),
-                              SizedBox(
-                                width: 150,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 30),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        item.foodName,
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.foodName,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      Text(
-                                        PriceFormatter.formatPriceFromString(
-                                            item.foodPrice.toString()),
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.normal,
-                                        ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Text(
+                                      ' x ${item.foodSalesQuantity}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.normal,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              SizedBox(
-                                width: 82,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      const SizedBox(
-                                        height: 40,
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text(
+                                      PriceFormatter.formatPriceFromString(
+                                          item.foodPrice.toString()),
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.normal,
                                       ),
-                                      Text(
-                                        PriceFormatter.formatPriceFromString(
-                                            item.totalPrice.toString()),
-                                        style: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Text(
+                                      PriceFormatter.formatPriceFromString(
+                                          item.totalPrice.toString()),
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -216,10 +227,31 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                             ),
                           ),
                           Text(
-                            PriceFormatter.formatPriceFromString(feeShip),
+                            PriceFormatter.formatPriceFromString(
+                                feeShip.toString()),
                             style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Tổng (giảm ${PriceFormatter.formatPriceFromString(couponPrice.toString())})',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            PriceFormatter.formatPriceFromString(
+                                subtotal.toString()),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],

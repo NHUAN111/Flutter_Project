@@ -1,4 +1,3 @@
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:project_specialized_1/model/cart_model.dart';
 import 'package:sqflite/sqflite.dart';

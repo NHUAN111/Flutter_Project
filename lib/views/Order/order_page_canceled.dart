@@ -93,6 +93,7 @@ class _OrdersCanceledPageState extends State<OrdersCanceledPage> {
                         ),
                         Row(
                           children: [
+                            const SizedBox(width: 6),
                             Container(
                               height: 80,
                               width: 80,
@@ -133,7 +134,7 @@ class _OrdersCanceledPageState extends State<OrdersCanceledPage> {
                         ),
                         const Divider(
                           color: Colors.grey,
-                          thickness: 2,
+                          thickness: 1,
                           height: 20,
                           indent: 5,
                           endIndent: 5,
@@ -184,7 +185,7 @@ class _OrdersCanceledPageState extends State<OrdersCanceledPage> {
                         ),
                         const Divider(
                           color: Colors.grey,
-                          thickness: 2,
+                          thickness: 1,
                           height: 20,
                           indent: 5,
                           endIndent: 5,

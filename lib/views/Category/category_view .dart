@@ -24,8 +24,12 @@ class _CategoriesViewState extends State<CategoriesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Danh mục'),
-        leading: const Icon(Icons.food_bank_rounded),
+        title: const Text('Danh Mục'),
+        centerTitle: true,
+        leading: const Icon(
+          Icons.food_bank,
+          size: 32,
+        ),
       ),
       body: Center(
         child: FutureBuilder<List<CategoryModel>>(

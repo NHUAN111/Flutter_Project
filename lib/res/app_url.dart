@@ -1,5 +1,5 @@
 class AppUrl {
-  static var baseUrl = 'http://192.168.1.16/DACN-Web/';
+  static var baseUrl = 'http://192.168.1.2/DACN-Web/';
 
   static var loginUrl = '${baseUrl}api/web/login';
   static var registerUrl = '${baseUrl}api/web/register';
@@ -15,4 +15,9 @@ class AppUrl {
   static var infoOrders = '${baseUrl}api/web/info_orders';
   static var cancelOrder = '${baseUrl}api/web/cancel_order';
   static var orderDetail = '${baseUrl}api/web/detail_order';
+  // Feeship
+  static var cityAddress = '${baseUrl}api/web/city';
+  static var pronviceAddress = '${baseUrl}api/web/pronvice';
+  static var wardAddress = '${baseUrl}api/web/ward';
+  static var shippingFee = '${baseUrl}api/web/shipping_fee';
 }

@@ -8,5 +8,7 @@ class RoutesName {
   static const String cart = "CART_SCREEN";
   static const String coupon = "COUPON_SCREEN";
   static const String order = "ORDER_SCREEN";
+  static const String feeship = "FEESHIP_SCREEN";
+  static const String addressDelivery = "ADDRESS_DELIVERY_SCREEN";
   // static const String orderDetail = "ORDER_DETAIL_SCREEN";
 }

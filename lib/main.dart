@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:project_specialized_1/constant/constant.dart';
 import 'package:project_specialized_1/data/LocalData/SharedPrefsManager/shared_preferences.dart';
 import 'package:project_specialized_1/data/LocalData/SqfLite/CartLocalData.dart';
+import 'package:project_specialized_1/data/LocalData/SqfLite/FeeshipLocalData.dart';
 import 'package:project_specialized_1/utils/routes/routes.dart';
 import 'package:project_specialized_1/utils/routes/routes_name.dart';
 import 'package:project_specialized_1/view_model/cart_view_model.dart';
 import 'package:project_specialized_1/view_model/coupon_view_model.dart';
+import 'package:project_specialized_1/view_model/feeship_view_model.dart';
 import 'package:project_specialized_1/view_model/food_view_model.dart';
 import 'package:project_specialized_1/view_model/auth_view_model.dart';
 import 'package:project_specialized_1/view_model/category_view_model.dart';
@@ -18,14 +20,20 @@ void main() async {
   // Khởi tạo SharedPreferences trước khi chạy ứng dụng
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPrefsManager.init();
+
   // Obtain shared preferences.
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.remove(Constant.COUPON_PREFERENCES);
-  // Khởi tạo đối tượng DatabaseHelper
-  DatabaseHelper databaseHelper = DatabaseHelper();
 
+  // Khởi tạo đối tượng DatabaseHelper Cart
+  DatabaseHelper databaseHelper = DatabaseHelper();
   // Xóa hết dữ liệu trong bảng 'cart'
   await databaseHelper.deleteAllData();
+
+  // Khởi tạo đối tượng DatabaseHelper Feeship
+  DatabaseHelperFeeship databaseHelperFeeship = DatabaseHelperFeeship();
+  // Xóa hết dữ liệu trong bảng 'feeShip'
+  await databaseHelperFeeship.deleteAllData();
 
   runApp(const MyApp());
 }
@@ -45,6 +53,7 @@ class _MyAppState extends State<MyApp> {
   late CartViewModel _cartViewModel;
   late CouponViewModel _couponViewModel;
   late OrdersViewModel _ordersViewModel;
+  late FeeshipViewModel _feeshipViewModel;
 
   @override
   void initState() {
@@ -56,6 +65,7 @@ class _MyAppState extends State<MyApp> {
     _cartViewModel = CartViewModel();
     _couponViewModel = CouponViewModel();
     _ordersViewModel = OrdersViewModel();
+    _feeshipViewModel = FeeshipViewModel();
   }
 
   @override
@@ -69,13 +79,14 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider.value(value: _cartViewModel),
         ChangeNotifierProvider.value(value: _couponViewModel),
         ChangeNotifierProvider.value(value: _ordersViewModel),
+        ChangeNotifierProvider.value(value: _feeshipViewModel),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        initialRoute: RoutesName.order,
+        initialRoute: RoutesName.home,
         onGenerateRoute: Routes.generateRoute,
       ),
     );

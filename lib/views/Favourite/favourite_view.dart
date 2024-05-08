@@ -24,8 +24,13 @@ class _FavouriteViewState extends State<FavouriteView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Yêu thích'),
-        leading: const Icon(Icons.food_bank_rounded),
+        title: const Text('Sản Phẩm Yêu Thích'),
+        centerTitle: true,
+        leading: const Icon(
+          Icons.favorite,
+          size: 34,
+          color: Color.fromARGB(255, 241, 56, 43),
+        ),
       ),
       body: Center(
         child: FutureBuilder<List<CategoryModel>>(

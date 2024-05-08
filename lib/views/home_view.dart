@@ -6,7 +6,14 @@ import 'package:project_specialized_1/views/Food/food_all_view.dart';
 import 'package:project_specialized_1/views/Food/food_best_seller_view.dart';
 import 'package:project_specialized_1/views/Food/food_discount_view.dart';
 import 'package:project_specialized_1/views/Food/food_new_view.dart';
+import 'package:project_specialized_1/views/Profile/profile_view.dart';
 import 'package:project_specialized_1/views/Slider/slider_view.dart';
+import 'package:provider/provider.dart';
+
+import '../constant/constant.dart';
+import '../data/LocalData/SharedPrefsManager/shared_preferences.dart';
+import '../model/cart_model.dart';
+import '../view_model/cart_view_model.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -17,6 +24,42 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
+  late List<CartModel> cartItems = [];
+
+  // Check hien thi appbar
+  bool _showAppBar = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Đăng ký một người nghe để lắng nghe sự thay đổi trong giỏ hàng
+    Provider.of<CartViewModel>(context, listen: false).addListener(updateCart);
+    // Tải số lượng giỏ hàng ban đầu
+    loadQtyCart();
+  }
+
+  // Hàm này được gọi mỗi khi có thay đổi trong giỏ hàng
+  void updateCart() {
+    loadQtyCart();
+  }
+
+  void loadQtyCart() async {
+    final viewModel = Provider.of<CartViewModel>(context, listen: false);
+    final savedUser = SharedPrefsManager.getData(Constant.USER_PREFERENCES);
+
+    final cartItemsData = await viewModel.listAllCart(savedUser!.customerId!);
+    setState(() {
+      cartItems = cartItemsData;
+    });
+  }
+
+  @override
+  void dispose() {
+    // Hủy đăng ký người nghe khi widget bị hủy
+    Provider.of<CartViewModel>(context, listen: false)
+        .removeListener(updateCart);
+    super.dispose();
+  }
 
   // Các trang view tương ứng với mỗi tab
   final List<Widget> _pages = [
@@ -28,38 +71,77 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    int countCart = cartItems.length;
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            const FlutterLogo(size: 30), // Logo Flutter
-            const SizedBox(width: 20), // Khoảng cách giữa logo và ô tìm kiếm
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Tìm kiếm...',
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.zero,
+      appBar: _showAppBar
+          ? AppBar(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Image.asset(
+                    'assets/images/logo-app.png',
+                    width: 80,
+                    height: 120,
                   ),
-                  style: TextStyle(fontSize: 14),
-                ),
+                  // const SizedBox(width: ), // Khoảng cách giữa logo và ô tìm kiếm
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Tìm kiếm...',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, RoutesName.cart);
+                    },
+                    icon: Stack(
+                      children: [
+                        const Icon(
+                          Icons.shopping_cart,
+                          size: 32,
+                        ),
+                        if (countCart > 0)
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 18,
+                                minHeight: 18,
+                              ),
+                              child: Text(
+                                '$countCart',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, RoutesName.cart);
-              },
-              icon: const Icon(Icons.shopping_cart),
-            ),
-          ],
-        ),
-      ),
+            )
+          : null,
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
@@ -92,6 +174,7 @@ class _HomeViewState extends State<HomeView> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      _showAppBar = index != 2 && index != 3 && index != 1;
     });
   }
 }
@@ -136,6 +219,7 @@ class HomeViewPage extends StatelessWidget {
               FoodBestSellerView(),
 
               // Food New
+              SizedBox(height: 12),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                 child: Text(
@@ -149,6 +233,7 @@ class HomeViewPage extends StatelessWidget {
               FoodNewView(),
 
               // Food Discount
+              SizedBox(height: 12),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                 child: Text(
@@ -162,6 +247,7 @@ class HomeViewPage extends StatelessWidget {
               FoodDiscountView(),
 
               // All Food
+              SizedBox(height: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -177,11 +263,11 @@ class HomeViewPage extends StatelessWidget {
                       ),
                       SizedBox(width: 140),
                       Text(
-                        'Xem tất cả',
+                        'Xem tất cả >',
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.normal,
-                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 241, 56, 43),
                         ),
                       ),
                     ],
@@ -224,8 +310,8 @@ class ProfileViewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Cá nhân'),
+    return Scaffold(
+      body: ProfileView(),
     );
   }
 }

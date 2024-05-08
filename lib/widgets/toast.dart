@@ -9,6 +9,7 @@ class BaseToast {
       alignment: Alignment.topCenter,
       title: Text(message),
       progressBarTheme: null,
+      showProgressBar: null,
       description: Text(description),
       style: ToastificationStyle.flat,
       type: ToastificationType.success,

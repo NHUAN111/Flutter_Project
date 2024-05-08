@@ -4,7 +4,6 @@ import 'package:project_specialized_1/view_model/cart_view_model.dart';
 import 'package:provider/provider.dart';
 import '../../constant/constant.dart';
 import '../../data/LocalData/SharedPrefsManager/shared_preferences.dart';
-import '../../model/coupon_model.dart';
 import '../../utils/routes/routes_name.dart';
 import '../../widgets/format_price.dart';
 

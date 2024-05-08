@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import '../../constant/constant.dart';
 import '../../data/LocalData/SharedPrefsManager/shared_preferences.dart';
-import '../../view_model/category_view_model.dart';
 import '../../widgets/format_price.dart';
 
 class CouponView extends StatefulWidget {

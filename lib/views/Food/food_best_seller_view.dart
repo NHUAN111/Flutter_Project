@@ -64,16 +64,24 @@ class _FoodBestSellerViewState extends State<FoodBestSellerView> {
                           ),
                         ),
                         Positioned(
-                          top: 0,
-                          right: 0.2,
-                          child: IconButton(
-                            onPressed: () {
-                              print('${food.foodId}yeu thich');
-                            },
-                            icon: const Icon(
-                              Icons.favorite_border,
-                              size: 30,
-                              // color: Color(0xFFFF3B45),
+                          top: 4,
+                          right: 4,
+                          child: Container(
+                            padding: const EdgeInsets.all(0.1),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle, // Hình dạng hình tròn
+                              color: const Color.fromARGB(255, 240, 204, 201)
+                                  .withOpacity(0.7), // Màu nền với độ mờ
+                            ),
+                            child: IconButton(
+                              color: const Color.fromARGB(255, 241, 56, 43),
+                              onPressed: () {
+                                print('${food.foodId}yeu thich');
+                              },
+                              icon: const Icon(
+                                Icons.favorite_border,
+                                size: 30,
+                              ),
                             ),
                           ),
                         ),
@@ -114,7 +122,7 @@ class _FoodBestSellerViewState extends State<FoodBestSellerView> {
                                     ),
                                   ],
                                 ),
-                                TextButton(
+                                ElevatedButton(
                                   onPressed: () {
                                     Navigator.push(
                                       context,
@@ -127,12 +135,20 @@ class _FoodBestSellerViewState extends State<FoodBestSellerView> {
                                   style: ButtonStyle(
                                     foregroundColor:
                                         MaterialStateProperty.all<Color>(
-                                            Colors.blue),
+                                      const Color.fromARGB(255, 241, 56, 43),
+                                    ),
                                     overlayColor:
                                         MaterialStateProperty.all<Color>(
-                                            Colors.blue.withOpacity(0.1)),
+                                            const Color.fromARGB(
+                                                    255, 233, 34, 47)
+                                                .withOpacity(0.1)),
                                   ),
-                                  child: const Text('Chọn mua'),
+                                  child: const Text(
+                                    'Chọn mua',
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 241, 56, 43),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),

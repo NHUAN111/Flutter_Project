@@ -56,6 +56,27 @@ class SharedPrefsManager {
     return null;
   }
 
+  // Thiết lập dữ liệu user vào SharedPreferences
+  static Future<void> setDataFeeship(String key, FeeshipModel data) async {
+    final String jsonData = json.encode(data.toMap());
+    await _preferences.setString(key, jsonData);
+  }
+
+  // Lấy dữ liệu từ user SharedPreferences
+  static FeeshipModel? getDataFeeship(String key) {
+    final String? jsonData = _preferences.getString(key);
+    if (jsonData != null) {
+      try {
+        final Map<String, dynamic> dataMap = json.decode(jsonData);
+        return FeeshipModel.fromJson(dataMap);
+      } catch (e) {
+        print('Error decoding data for key $key: $e');
+        return null;
+      }
+    }
+    return null;
+  }
+
   // Xóa dữ liệu từ SharedPreferences
   static Future<void> removeData(String key) async {
     await _preferences.remove(key);

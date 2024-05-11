@@ -59,7 +59,8 @@ class FeeshipRepository {
     }
   }
 
-  Future<void> getFeeship(String address) async {
+  Future<void> getFeeship(
+      String address, String customerName, String customerPhone) async {
     var requestData = {
       'shipping_address': address,
     };
@@ -74,11 +75,15 @@ class FeeshipRepository {
 
       final user = SharedPrefsManager.getData(Constant.USER_PREFERENCES);
       int? customerid = user!.customerId;
+
       FeeshipModel feeshipModel = FeeshipModel(
-          customerId: customerid,
-          feeship: feeValue,
-          address: address,
-          statusFee: 0);
+        customerId: customerid,
+        feeship: feeValue,
+        address: address,
+        statusFee: 0,
+        customerName: customerName,
+        customerPhone: customerPhone,
+      );
       await _databaseHelperFeeship.insertFeeShip(feeshipModel);
     } else {
       throw Exception('Failed feeship');

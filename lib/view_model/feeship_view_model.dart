@@ -58,12 +58,24 @@ class FeeshipViewModel with ChangeNotifier {
     }
   }
 
-  Future<void> getFeeShip(String address) async {
+  Future<void> getFeeShip(
+      String address, String customerName, String customerPhone) async {
     try {
-      await _feeshipRepository.getFeeship(address);
+      await _feeshipRepository.getFeeship(address, customerName, customerPhone);
     } catch (error) {
       if (kDebugMode) {
         print('Feeship fail $error');
+      }
+    }
+    return;
+  }
+
+  Future<void> updateFeeship(FeeshipModel feeshipModel) async {
+    try {
+      await _databaseHelperFeeship.updateFeeship(feeshipModel);
+    } catch (error) {
+      if (kDebugMode) {
+        print('Feeship fail update $error');
       }
     }
     return;
@@ -75,6 +87,15 @@ class FeeshipViewModel with ChangeNotifier {
     } catch (e) {
       print('{$e}');
       throw Exception('Failed to list all delivery to table feeship: $e');
+    }
+  }
+
+  Future<bool> checkFee(int customerId) async {
+    try {
+      return await _databaseHelperFeeship.checkFeeshipExist(customerId);
+    } catch (e) {
+      print('{$e}');
+      throw Exception('Failed check fee: ');
     }
   }
 }

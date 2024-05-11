@@ -7,6 +7,7 @@ import 'package:project_specialized_1/utils/routes/routes.dart';
 import 'package:project_specialized_1/utils/routes/routes_name.dart';
 import 'package:project_specialized_1/view_model/cart_view_model.dart';
 import 'package:project_specialized_1/view_model/coupon_view_model.dart';
+import 'package:project_specialized_1/view_model/favourite_view_model.dart';
 import 'package:project_specialized_1/view_model/feeship_view_model.dart';
 import 'package:project_specialized_1/view_model/food_view_model.dart';
 import 'package:project_specialized_1/view_model/auth_view_model.dart';
@@ -23,17 +24,18 @@ void main() async {
 
   // Obtain shared preferences.
   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove(Constant.FEESHIP_PREFERENCES);
   prefs.remove(Constant.COUPON_PREFERENCES);
 
   // Khởi tạo đối tượng DatabaseHelper Cart
-  DatabaseHelper databaseHelper = DatabaseHelper();
+  // DatabaseHelper databaseHelper = DatabaseHelper();
   // Xóa hết dữ liệu trong bảng 'cart'
-  await databaseHelper.deleteAllData();
+  // await databaseHelper.deleteAllData();
 
   // Khởi tạo đối tượng DatabaseHelper Feeship
   DatabaseHelperFeeship databaseHelperFeeship = DatabaseHelperFeeship();
   // Xóa hết dữ liệu trong bảng 'feeShip'
-  await databaseHelperFeeship.deleteAllData();
+  // await databaseHelperFeeship.deleteAllData();
 
   runApp(const MyApp());
 }
@@ -54,6 +56,7 @@ class _MyAppState extends State<MyApp> {
   late CouponViewModel _couponViewModel;
   late OrdersViewModel _ordersViewModel;
   late FeeshipViewModel _feeshipViewModel;
+  late FavouriteViewModel _favouriteViewModel;
 
   @override
   void initState() {
@@ -66,6 +69,7 @@ class _MyAppState extends State<MyApp> {
     _couponViewModel = CouponViewModel();
     _ordersViewModel = OrdersViewModel();
     _feeshipViewModel = FeeshipViewModel();
+    _favouriteViewModel = FavouriteViewModel();
   }
 
   @override
@@ -80,6 +84,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider.value(value: _couponViewModel),
         ChangeNotifierProvider.value(value: _ordersViewModel),
         ChangeNotifierProvider.value(value: _feeshipViewModel),
+        ChangeNotifierProvider.value(value: _favouriteViewModel),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

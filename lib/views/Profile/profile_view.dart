@@ -44,7 +44,7 @@ class ProfileView extends StatelessWidget {
                   shadowColor: Colors.black12,
                   child: ListTile(
                     leading: Icon(
-                      Icons.outbox_rounded,
+                      Icons.shopping_basket_sharp,
                     ),
                     title: Text('Đơn Hàng Của Bạn'),
                     trailing: Icon(Icons.chevron_right),

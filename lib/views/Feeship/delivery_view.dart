@@ -16,11 +16,13 @@ class DeliveryView extends StatefulWidget {
 class _DeliveryViewState extends State<DeliveryView> {
   late Future<List<FeeshipModel>> futureFeeship;
   late List<FeeshipModel> feeShipItems = [];
-
+  List<FeeshipModel> feeShip = [];
+  bool isChecked = false;
+  int? checkedIndex;
   @override
   void initState() {
-    loadData();
     super.initState();
+    loadData();
   }
 
   void loadData() async {
@@ -31,7 +33,6 @@ class _DeliveryViewState extends State<DeliveryView> {
     setState(() {
       feeShipItems = deliveryItemsData;
     });
-    print(deliveryItemsData.length);
   }
 
   @override
@@ -40,6 +41,17 @@ class _DeliveryViewState extends State<DeliveryView> {
       appBar: AppBar(
         title: const Text('Địa Chỉ Của Bạn'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, RoutesName.feeship);
+            },
+            icon: const Icon(
+              Icons.add,
+              size: 30,
+            ),
+          )
+        ],
       ),
       body: Center(
         child: Column(
@@ -53,11 +65,18 @@ class _DeliveryViewState extends State<DeliveryView> {
                   } else if (snapshot.hasError) {
                     return Text('Đã xảy ra lỗi: ${snapshot.error}');
                   } else if (snapshot.hasData && snapshot.data!.isEmpty) {
-                    return const Text(
-                      'Thêm địa chỉ của bạn',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                    return Center(
+                      child: SizedBox(
+                        width: 200, // Độ rộng mong muốn của nút
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Xu ly
+                            Navigator.pushNamed(context, RoutesName.feeship);
+                          },
+                          child: const Text(
+                            'Thêm địa chỉ mới',
+                          ),
+                        ),
                       ),
                     );
                   } else {
@@ -67,27 +86,102 @@ class _DeliveryViewState extends State<DeliveryView> {
                         final FeeshipModel item = feeShipItems[index];
 
                         return Padding(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.only(
+                              left: 10, right: 10, top: 6),
                           child: Column(
                             children: [
                               Card(
                                 elevation: 2,
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      item.address.toString(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  // Xu ly
-                                  Navigator.pushNamed(
-                                      context, RoutesName.feeship);
-                                },
-                                child: const Text(
-                                  'Thêm địa chỉ mới',
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      right: 10, left: 10, top: 8, bottom: 8),
+                                  child: Row(
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Người Nhận: ${item.customerName}',
+                                            style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            'Điện Thoại: ${item.customerPhone}',
+                                            style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          SizedBox(
+                                            width: 310,
+                                            child: Text(
+                                              item.address.toString(),
+                                              maxLines: 2,
+                                              style: const TextStyle(),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      Column(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              // Xu ly xoa
+                                            },
+                                            icon: const Icon(
+                                              Icons.delete,
+                                              color: Color.fromARGB(
+                                                  255, 232, 60, 60),
+                                            ),
+                                          ),
+                                          Checkbox(
+                                            value: checkedIndex == index
+                                                ? isChecked
+                                                : false,
+                                            onChanged: (value) async {
+                                              final user =
+                                                  SharedPrefsManager.getData(
+                                                      Constant
+                                                          .USER_PREFERENCES);
+                                              if (feeShip.isEmpty) {
+                                                FeeshipModel feeshipModel =
+                                                    FeeshipModel(
+                                                  customerId: user!.customerId,
+                                                  feeship: item.feeship,
+                                                  address: item.address,
+                                                  statusFee: 1,
+                                                  customerName:
+                                                      item.customerName,
+                                                  customerPhone:
+                                                      item.customerPhone,
+                                                );
+
+                                                await SharedPrefsManager.init();
+                                                await SharedPrefsManager
+                                                    .setDataFeeship(
+                                                  Constant.FEESHIP_PREFERENCES,
+                                                  feeshipModel,
+                                                );
+                                                print(
+                                                    feeshipModel.customerName);
+                                              }
+                                              setState(() {
+                                                isChecked = value!;
+                                                checkedIndex = index;
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],

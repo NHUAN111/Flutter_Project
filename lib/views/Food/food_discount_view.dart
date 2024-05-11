@@ -29,7 +29,7 @@ class _FoodDiscountViewState extends State<FoodDiscountView> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
-            child: CircularProgressIndicator(),
+            child: Text(''),
           );
         } else if (snapshot.hasError) {
           return Center(
@@ -74,12 +74,15 @@ class _FoodDiscountViewState extends State<FoodDiscountView> {
                                   .withOpacity(0.7), // Màu nền với độ mờ
                             ),
                             child: IconButton(
-                              color: const Color.fromARGB(255, 241, 56, 43),
+                              // color: const Color.fromARGB(255, 241, 56, 43),
                               onPressed: () {
                                 print('${food.foodId}yeu thich');
                               },
-                              icon: const Icon(
-                                Icons.favorite_border,
+                              icon: Image.asset(
+                                'assets/images/heart.png',
+                                width: 28,
+                                height: 28,
+                                color: Colors.white,
                               ),
                             ),
                           ),

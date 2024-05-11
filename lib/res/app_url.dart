@@ -1,5 +1,5 @@
 class AppUrl {
-  static var baseUrl = 'http://192.168.1.2/DACN-Web/';
+  static var baseUrl = 'http://192.168.1.4/DACN-Web/';
 
   static var loginUrl = '${baseUrl}api/web/login';
   static var registerUrl = '${baseUrl}api/web/register';

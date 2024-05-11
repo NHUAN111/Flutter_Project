@@ -33,15 +33,13 @@ class _CartViewState extends State<CartView> {
   void loadCartData() async {
     final viewModel = Provider.of<CartViewModel>(context, listen: false);
     final savedUser = SharedPrefsManager.getData(Constant.USER_PREFERENCES);
-    print(savedUser!.customerName);
     setState(() {
-      futureCart = viewModel.listAllCart(savedUser.customerId!);
+      futureCart = viewModel.listAllCart(savedUser!.customerId!);
     });
-    final cartItemsData = await viewModel.listAllCart(savedUser.customerId!);
+    final cartItemsData = await viewModel.listAllCart(savedUser!.customerId!);
     setState(() {
       cartItems = cartItemsData;
       countCart = cartItems.length;
-      total = calculateTotal(cartItems);
     });
 
     if (cartItems.isNotEmpty) {
@@ -72,13 +70,15 @@ class _CartViewState extends State<CartView> {
   Future<void> onDeleteCart(int id, int customerId) async {
     final viewModel = Provider.of<CartViewModel>(context, listen: false);
     await viewModel.deleteCart(id, customerId);
-    loadCartData();
+    total = calculateTotal(cartItems);
+    loadCartData(); // Cập nhật lại giỏ hàng sau khi xóa mục
   }
 
   Future<void> onUpdateQty(int foodId, int customerId, int quantity) async {
     final viewModel = Provider.of<CartViewModel>(context, listen: false);
     await viewModel.updateCart(foodId, customerId, quantity);
-    loadCartData();
+    total = calculateTotal(cartItems);
+    // loadCartData(); // Cập nhật lại giỏ hàng sau khi cập nhật số lượng
   }
 
   Future<void> updateCoupon() async {
@@ -113,246 +113,257 @@ class _CartViewState extends State<CartView> {
         title: Text('Giỏ Hàng ($countCart)'),
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          children: [
-            Expanded(
-              child: FutureBuilder<List<CartModel>>(
-                future: futureCart,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return Text('Đã xảy ra lỗi: ${snapshot.error}');
-                  } else if (snapshot.hasData && snapshot.data!.isEmpty) {
-                    return const Text(
-                      'Giỏ hàng trống',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    );
-                  } else {
-                    return ListView.builder(
-                      itemCount: cartItems.length,
-                      itemBuilder: (context, index) {
-                        final CartModel item = cartItems[index];
-                        String totalPrice =
-                            (double.parse(item.price.replaceAll(',', '')) *
-                                    item.quantity)
-                                .toString();
+      body: RefreshIndicator(
+        onRefresh: () async {
+          loadCartData();
+        },
+        child: Center(
+          child: Column(
+            children: [
+              Expanded(
+                child: FutureBuilder<List<CartModel>>(
+                  future: futureCart,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Đã xảy ra lỗi: ${snapshot.error}');
+                    } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+                      return Image.asset(
+                        'assets/images/empty-cart.png',
+                        width: 180,
+                        height: 220,
+                      );
+                    } else {
+                      return ListView.builder(
+                        itemCount: cartItems.length,
+                        itemBuilder: (context, index) {
+                          final CartModel item = cartItems[index];
+                          String totalPrice =
+                              (double.parse(item.price.replaceAll(',', '')) *
+                                      item.quantity)
+                                  .toString();
 
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                              left: 10, right: 10, top: 10),
-                          child: Card(
-                            elevation: 2,
-                            color: Colors.white,
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: 130,
-                                  width: 140,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    image: DecorationImage(
-                                      image: NetworkImage(item.imageUrl),
-                                      fit: BoxFit.cover,
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10, right: 10, top: 10),
+                            child: Card(
+                              elevation: 2,
+                              color: Colors.white,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: 130,
+                                    width: 140,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        image: NetworkImage(item.imageUrl),
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(width: 10),
-                                SizedBox(
-                                  width: 150,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 30),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          item.name,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
+                                  const SizedBox(width: 10),
+                                  SizedBox(
+                                    width: 150,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 30),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item.name,
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          PriceFormatter.formatPriceFromString(
-                                              item.price),
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.normal,
+                                          Text(
+                                            PriceFormatter
+                                                .formatPriceFromString(
+                                                    item.price),
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.normal,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 20),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(Icons.remove),
-                                              onPressed: () {
-                                                setState(() {
-                                                  if (item.quantity > 1) {
-                                                    item.quantity--;
+                                          const SizedBox(height: 20),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              IconButton(
+                                                icon: const Icon(Icons.remove),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    if (item.quantity > 1) {
+                                                      item.quantity--;
+                                                      onUpdateQty(
+                                                          item.idFood,
+                                                          item.customerId,
+                                                          item.quantity);
+                                                    }
+                                                  });
+                                                },
+                                              ),
+                                              Text(
+                                                '${item.quantity}',
+                                                style: const TextStyle(
+                                                    fontSize: 16),
+                                              ),
+                                              IconButton(
+                                                icon: const Icon(Icons.add),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    item.quantity++;
                                                     onUpdateQty(
                                                         item.idFood,
                                                         item.customerId,
                                                         item.quantity);
-                                                  }
-                                                });
-                                              },
-                                            ),
-                                            Text(
-                                              '${item.quantity}',
-                                              style:
-                                                  const TextStyle(fontSize: 16),
-                                            ),
-                                            IconButton(
-                                              icon: const Icon(Icons.add),
-                                              onPressed: () {
-                                                setState(() {
-                                                  item.quantity++;
-                                                  onUpdateQty(
-                                                      item.idFood,
-                                                      item.customerId,
-                                                      item.quantity);
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                                  });
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 82,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {
-                                            onDeleteCart(
-                                                item.idFood, item.customerId);
-                                          },
-                                          icon: const Icon(
-                                            Icons.close_rounded,
-                                            size: 30.0,
-                                            color: Color.fromARGB(
-                                                255, 241, 56, 43),
+                                  SizedBox(
+                                    width: 82,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              onDeleteCart(
+                                                  item.idFood, item.customerId);
+                                            },
+                                            icon: const Icon(
+                                              Icons.close_rounded,
+                                              size: 30.0,
+                                              color: Color.fromARGB(
+                                                  255, 241, 56, 43),
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          height: 40,
-                                        ),
-                                        Text(
-                                          PriceFormatter.formatPriceFromString(
-                                              totalPrice),
-                                          style: const TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
+                                          const SizedBox(
+                                            height: 40,
                                           ),
-                                        ),
-                                      ],
+                                          Text(
+                                            PriceFormatter
+                                                .formatPriceFromString(
+                                                    totalPrice),
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Mã giảm: ${checkCoupon ? couponCode : 'Trống'}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            if (hasItemsInCart) {
+                              Navigator.pushNamed(context, RoutesName.coupon);
+                              await SharedPrefsManager.init();
+                              await SharedPrefsManager.removeData(
+                                  Constant.COUPON_PREFERENCES);
+                              updateCoupon();
+                            }
+                          },
+                          child: Text(
+                            'Chọn mã giảm >',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal,
+                              color:
+                                  hasItemsInCart ? Colors.black : Colors.grey,
                             ),
                           ),
-                        );
-                      },
-                    );
-                  }
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Mã giảm: ${checkCoupon ? couponCode : 'Trống'}',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          if (hasItemsInCart) {
-                            Navigator.pushNamed(context, RoutesName.coupon);
-                            await SharedPrefsManager.init();
-                            await SharedPrefsManager.removeData(
-                                Constant.COUPON_PREFERENCES);
-                            updateCoupon();
-                          }
-                        },
-                        child: Text(
-                          'Chọn mã giảm >',
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Tổng (tạm tính): ',
                           style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal,
-                            color: hasItemsInCart ? Colors.black : Colors.grey,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
+                        Text(
+                          ' ${PriceFormatter.formatPriceFromString(total.toStringAsFixed(2))}',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10.0),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: hasItemsInCart
+                            ? const Color.fromARGB(255, 249, 75, 63)
+                            : Colors.grey,
+                        textStyle: const TextStyle(
+                          fontSize: 22,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Tổng (tạm tính): ',
+                      onPressed: () {
+                        // Qua trang chi tiet thanh toan
+                        if (hasItemsInCart) {
+                          Navigator.pushNamed(context, RoutesName.checkout);
+                        }
+                      },
+                      child: const Text(
+                        'Đặt Đơn',
                         style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
-                      Text(
-                        ' ${PriceFormatter.formatPriceFromString(total.toStringAsFixed(2))}',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10.0),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 241, 56, 43),
-                      textStyle: const TextStyle(
-                        fontSize: 22,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
                     ),
-                    onPressed: () {
-                      // Qua trang chi tiet thanh toan
-                    },
-                    child: const Text(
-                      'Đặt Đơn',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

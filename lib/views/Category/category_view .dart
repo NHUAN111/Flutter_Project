@@ -24,57 +24,66 @@ class _CategoriesViewState extends State<CategoriesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Danh Mục'),
-        centerTitle: true,
-        leading: const Icon(
-          Icons.food_bank,
-          size: 32,
+        title: const Text(
+          'Danh Mục',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
       ),
-      body: Center(
-        child: FutureBuilder<List<CategoryModel>>(
-          future: futureCategories,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return GridView.count(
-                crossAxisCount: 3, // Số lượng danh mục mỗi hàng
-                childAspectRatio: 1, // Tỉ lệ chiều rộng và chiều cao của mỗi ô
-                children: snapshot.data!.map((category) {
-                  return GestureDetector(
-                    onTap: () {
-                      // Xử lý khi nhấn vào danh mục
-                      print(category.categoryId);
-                    },
-                    child: Card(
-                      color: Colors.white,
-                      elevation: 2, // Độ nâng cao của thẻ
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.network(
-                            category.categoryImg,
-                            height: 70, // Độ cao của hình ảnh
-                            width: 70, // Độ rộng của hình ảnh
-                            fit: BoxFit.cover,
+      body: Container(
+        color: const Color.fromARGB(255, 255, 255, 255),
+        child: Center(
+          child: FutureBuilder<List<CategoryModel>>(
+            future: futureCategories,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: GridView.count(
+                    crossAxisCount: 2, // Số lượng danh mục mỗi hàng
+                    childAspectRatio:
+                        1, // Tỉ lệ chiều rộng và chiều cao của mỗi ô
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    children: snapshot.data!.map((category) {
+                      return GestureDetector(
+                        onTap: () {
+                          // Xử lý khi nhấn vào danh mục
+                          print(category.categoryId);
+                        },
+                        child: Card(
+                          color: Colors.white,
+                          elevation: 2, // Độ nâng cao của thẻ
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.network(
+                                category.categoryImg,
+                                height: 80, // Độ cao của hình ảnh
+                                width: 80, // Độ rộng của hình ảnh
+                                fit: BoxFit.cover,
+                              ),
+                              const SizedBox(height: 18),
+                              Text(
+                                category.categoryName,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            category.categoryName,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              );
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
-            }
-            return const CircularProgressIndicator();
-          },
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Text('${snapshot.error}');
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
         ),
       ),
     );

@@ -1,6 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project_specialized_1/constant/constant.dart';
+import 'package:project_specialized_1/data/LocalData/SharedPrefsManager/shared_preferences.dart';
 import 'package:project_specialized_1/utils/routes/routes_name.dart';
 import 'package:project_specialized_1/views/Category/category_view%20.dart';
+import 'package:project_specialized_1/views/Category/category_view_home.dart';
 import 'package:project_specialized_1/views/Favourite/favourite_view.dart';
 import 'package:project_specialized_1/views/Food/food_all_view.dart';
 import 'package:project_specialized_1/views/Food/food_best_seller_view.dart';
@@ -8,12 +12,6 @@ import 'package:project_specialized_1/views/Food/food_discount_view.dart';
 import 'package:project_specialized_1/views/Food/food_new_view.dart';
 import 'package:project_specialized_1/views/Profile/profile_view.dart';
 import 'package:project_specialized_1/views/Slider/slider_view.dart';
-import 'package:provider/provider.dart';
-
-import '../constant/constant.dart';
-import '../data/LocalData/SharedPrefsManager/shared_preferences.dart';
-import '../model/cart_model.dart';
-import '../view_model/cart_view_model.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -24,41 +22,15 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
-  late List<CartModel> cartItems = [];
 
   // Check hien thi appbar
   bool _showAppBar = true;
 
+  final savedUser = SharedPrefsManager.getData(Constant.USER_PREFERENCES);
+
   @override
   void initState() {
     super.initState();
-    // Đăng ký một người nghe để lắng nghe sự thay đổi trong giỏ hàng
-    Provider.of<CartViewModel>(context, listen: false).addListener(updateCart);
-    // Tải số lượng giỏ hàng ban đầu
-    loadQtyCart();
-  }
-
-  // Hàm này được gọi mỗi khi có thay đổi trong giỏ hàng
-  void updateCart() {
-    loadQtyCart();
-  }
-
-  void loadQtyCart() async {
-    final viewModel = Provider.of<CartViewModel>(context, listen: false);
-    final savedUser = SharedPrefsManager.getData(Constant.USER_PREFERENCES);
-
-    final cartItemsData = await viewModel.listAllCart(savedUser!.customerId!);
-    setState(() {
-      cartItems = cartItemsData;
-    });
-  }
-
-  @override
-  void dispose() {
-    // Hủy đăng ký người nghe khi widget bị hủy
-    Provider.of<CartViewModel>(context, listen: false)
-        .removeListener(updateCart);
-    super.dispose();
   }
 
   // Các trang view tương ứng với mỗi tab
@@ -71,98 +43,147 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    int countCart = cartItems.length;
     return Scaffold(
       appBar: _showAppBar
           ? AppBar(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Image.asset(
-                    'assets/images/logo-app.png',
-                    width: 80,
-                    height: 120,
-                  ),
-                  // const SizedBox(width: ), // Khoảng cách giữa logo và ô tìm kiếm
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Tìm kiếm...',
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, RoutesName.cart);
-                    },
-                    icon: Stack(
+              toolbarHeight: 140,
+              backgroundColor: const Color.fromARGB(255, 255, 60, 60),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+              ),
+              title: Padding(
+                padding:
+                    const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Icon(
-                          Icons.shopping_cart,
-                          size: 32,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Xin Chào ${savedUser!.customerName!.toString()} !',
+                              style: const TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w300,
+                                color: Color.fromARGB(255, 255, 255, 255),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            const Text(
+                              'Welcome To Fast Food',
+                              style: TextStyle(
+                                fontSize: 21,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
-                        if (countCart > 0)
-                          Positioned(
-                            right: 0,
-                            top: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(2),
+                        Row(
+                          children: [
+                            Container(
                               decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(10),
+                                shape: BoxShape.rectangle,
+                                color: const Color.fromARGB(255, 240, 204, 201)
+                                    .withOpacity(0.5),
                               ),
-                              constraints: const BoxConstraints(
-                                minWidth: 18,
-                                minHeight: 18,
-                              ),
-                              child: Text(
-                                '$countCart',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
+                              child: IconButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, RoutesName.cart);
+                                },
+                                icon: const Icon(
+                                  Icons.shopping_bag,
                                   color: Colors.white,
-                                  fontSize: 12,
                                 ),
                               ),
                             ),
-                          ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                shape: BoxShape.rectangle,
+                                color: const Color.fromARGB(255, 240, 204, 201)
+                                    .withOpacity(0.5),
+                              ),
+                              child: IconButton(
+                                onPressed: () {},
+                                icon: const Icon(
+                                  Icons.notifications,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        // Image.asset(
+                        //   'assets/images/restaurant.png',
+                        //   width: 60,
+                        //   height: 60,
+                        // ),
                       ],
                     ),
-                  ),
-                ],
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 234, 234, 234),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      // padding: const EdgeInsets.only(left: 4),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Tìm kiếm...',
+                          border: InputBorder.none,
+                          icon: IconButton(
+                            onPressed: () {
+                              //
+                              print('ok');
+                            },
+                            icon: const Icon(
+                              Icons.search,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             )
           : null,
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         selectedItemColor: Colors.red,
         unselectedItemColor: Colors.black,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(CupertinoIcons.home),
             label: 'Trang chủ',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.category),
+            icon: Icon(CupertinoIcons.book),
             label: 'Danh mục',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
+            icon: Icon(Icons.favorite_border),
             label: 'Yêu thích',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(CupertinoIcons.person),
             label: 'Cá nhân',
           ),
         ],
@@ -186,98 +207,103 @@ class HomeViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: const [
-          SliderView(),
-          SizedBox(height: 5),
-          // View comming soon
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-                child: Text(
-                  'Gợi Ý Cho Bạn ',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+      body: Container(
+        color: Colors.grey[200],
+        child: ListView(
+          children: const [
+            SliderView(),
+            SizedBox(height: 4),
+            // View comming soon
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                  child: Text(
+                    'Danh Mục ',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
+                CategoryHomeView(),
 
-              // FoodBestSellerView
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-                child: Text(
-                  'Bán Chạy Nhất ',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                // FoodBestSellerView
+                SizedBox(height: 12),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                  child: Text(
+                    'Bán Chạy Nhất ',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              FoodBestSellerView(),
+                FoodBestSellerView(),
 
-              // Food New
-              SizedBox(height: 12),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-                child: Text(
-                  'Món Mới ',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                // Food New
+                SizedBox(height: 12),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                  child: Text(
+                    'Món Mới ',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              FoodNewView(),
+                FoodNewView(),
 
-              // Food Discount
-              SizedBox(height: 12),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-                child: Text(
-                  'Món Giảm Giá ',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                // Food Discount
+                SizedBox(height: 12),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                  child: Text(
+                    'Món Giảm Giá ',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              FoodDiscountView(),
+                FoodDiscountView(),
 
-              // All Food
-              SizedBox(height: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        'Tất Cả Món',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                // All Food
+                SizedBox(height: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text(
+                          'Tất Cả Món',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 140),
-                      Text(
-                        'Xem tất cả >',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 241, 56, 43),
+                        SizedBox(width: 140),
+                        Text(
+                          'Xem tất cả >',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 241, 56, 43),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  FoodAllView(),
-                ],
-              )
-            ],
-          ),
-        ],
+                      ],
+                    ),
+                    FoodAllView(),
+                  ],
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

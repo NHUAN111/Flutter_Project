@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:project_specialized_1/constant/constant.dart';
+import 'package:project_specialized_1/data/LocalData/SharedPrefsManager/shared_preferences.dart';
+import 'package:project_specialized_1/model/favourite_model.dart';
 import 'package:project_specialized_1/model/food_model.dart';
+import 'package:project_specialized_1/view_model/favourite_view_model.dart';
 import 'package:project_specialized_1/views/Food/food_detail_view.dart';
 import 'package:project_specialized_1/view_model/food_view_model.dart';
+import 'package:project_specialized_1/widgets/toast.dart';
 import 'package:provider/provider.dart';
 
 import '../../widgets/format_price.dart';
@@ -15,6 +20,7 @@ class FoodBestSellerView extends StatefulWidget {
 
 class _FoodBestSellerViewState extends State<FoodBestSellerView> {
   late Future<List<FoodModel>> futureFoods;
+  late FavouriteModel favouriteModel;
 
   @override
   void initState() {
@@ -29,9 +35,7 @@ class _FoodBestSellerViewState extends State<FoodBestSellerView> {
       future: futureFoods,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: Text(''));
         } else if (snapshot.hasError) {
           return Center(
             child: Text('Error: ${snapshot.error}'),
@@ -74,13 +78,42 @@ class _FoodBestSellerViewState extends State<FoodBestSellerView> {
                                   .withOpacity(0.7), // Màu nền với độ mờ
                             ),
                             child: IconButton(
-                              color: const Color.fromARGB(255, 241, 56, 43),
-                              onPressed: () {
-                                print('${food.foodId}yeu thich');
+                              onPressed: () async {
+                                final savedUser = SharedPrefsManager.getData(
+                                    Constant.USER_PREFERENCES);
+                                final viewModelFavourite =
+                                    Provider.of<FavouriteViewModel>(context,
+                                        listen: false);
+                                favouriteModel = FavouriteModel(
+                                  customerId: savedUser!.customerId,
+                                  foodId: food.foodId,
+                                  foodName: food.foodName,
+                                  foodPrice: food.foodPrice,
+                                  foodDesc: food.foodDesc,
+                                  foodImg: food.foodImg,
+                                  totalOrders: food.totalOrders,
+                                );
+
+                                bool isExist =
+                                    await viewModelFavourite.checkFavourite(
+                                        food.foodId, savedUser.customerId!);
+                                if (isExist) {
+                                  viewModelFavourite.deleteFavourite(
+                                      food.foodId, savedUser.customerId!);
+                                  BaseToast.showError(context, 'Thành công',
+                                      'Đã xóa khỏi mục yêu thích');
+                                } else {
+                                  viewModelFavourite
+                                      .insertFavourite(favouriteModel);
+                                  BaseToast.showSuccess(context, 'Thành công',
+                                      'Đã thêm vào mục yêu thích');
+                                }
                               },
-                              icon: const Icon(
-                                Icons.favorite_border,
-                                size: 30,
+                              icon: Image.asset(
+                                'assets/images/heart.png',
+                                width: 28,
+                                height: 28,
+                                color: Colors.white,
                               ),
                             ),
                           ),

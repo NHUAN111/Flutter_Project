@@ -29,7 +29,7 @@ class _SliderViewState extends State<SliderView> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
-            child: CircularProgressIndicator(),
+            child: Text(''),
           );
         } else if (snapshot.hasError) {
           return Center(
@@ -73,6 +73,24 @@ class _SliderViewState extends State<SliderView> {
                     });
                   },
                 ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: sliders.map((slider) {
+                  int index = sliders.indexOf(slider);
+                  return Container(
+                    width: 8,
+                    height: 8,
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 2.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _currentIndex == index
+                          ? Colors.red
+                          : Colors.grey.shade400,
+                    ),
+                  );
+                }).toList(),
               ),
             ],
           );

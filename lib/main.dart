@@ -23,9 +23,9 @@ void main() async {
   await SharedPrefsManager.init();
 
   // Obtain shared preferences.
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.remove(Constant.FEESHIP_PREFERENCES);
-  prefs.remove(Constant.COUPON_PREFERENCES);
+  // final SharedPreferences prefs = await SharedPreferences.getInstance();
+  // prefs.remove(Constant.FEESHIP_PREFERENCES);
+  // prefs.remove(Constant.COUPON_PREFERENCES);
 
   // Khởi tạo đối tượng DatabaseHelper Cart
   // DatabaseHelper databaseHelper = DatabaseHelper();
@@ -33,8 +33,8 @@ void main() async {
   // await databaseHelper.deleteAllData();
 
   // Khởi tạo đối tượng DatabaseHelper Feeship
-  DatabaseHelperFeeship databaseHelperFeeship = DatabaseHelperFeeship();
-  // Xóa hết dữ liệu trong bảng 'feeShip'
+  // DatabaseHelperFeeship databaseHelperFeeship = DatabaseHelperFeeship();
+  // // Xóa hết dữ liệu trong bảng 'feeShip'
   // await databaseHelperFeeship.deleteAllData();
 
   runApp(const MyApp());
@@ -91,7 +91,7 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        initialRoute: RoutesName.home,
+        initialRoute: RoutesName.login,
         onGenerateRoute: Routes.generateRoute,
       ),
     );

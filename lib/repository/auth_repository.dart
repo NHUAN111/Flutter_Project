@@ -29,7 +29,7 @@ class Authrepository {
         // Khởi tạo SharedPreferences
         await SharedPrefsManager.init();
         await SharedPrefsManager.setDataUser(Constant.USER_PREFERENCES, user);
-        print('Data saved');
+        print('Data saved login');
         return user;
       } else {
         throw Exception(data['message']);
@@ -53,10 +53,13 @@ class Authrepository {
 
       Map<String, dynamic> data = json.decode(response.body);
       if (data['status_code'] == 200) {
-        print('ok');
-        // List<dynamic> userData = data['data'];
-        // UserModel user = UserModel.fromJson(userData[0]);
-        // return user;
+        List<dynamic> userData = data['data'];
+        UserModel user = UserModel.fromJson(userData[0]);
+
+        // Khởi tạo SharedPreferences
+        await SharedPrefsManager.init();
+        await SharedPrefsManager.setDataUser(Constant.USER_PREFERENCES, user);
+        print('Data saved register');
       } else {
         throw Exception(data['message']);
       }

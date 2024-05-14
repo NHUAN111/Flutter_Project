@@ -19,6 +19,19 @@ class CartModel extends BaseModel {
     required this.quantity,
   });
 
+  // Mã gửi lên server xử lý đặt hàng
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'idFood': idFood,
+      'customer_id': customerId,
+      'nameFood': name,
+      'priceFood': price,
+      'imgFood': imageUrl,
+      'qtyFood': quantity,
+    };
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id': idFood,
@@ -43,11 +56,5 @@ class CartModel extends BaseModel {
 
   void updateQuantity(int newQuantity) {
     quantity = newQuantity;
-  }
-
-  @override
-  Map<String, dynamic> toJson() {
-    // TODO: implement toJson
-    throw UnimplementedError();
   }
 }

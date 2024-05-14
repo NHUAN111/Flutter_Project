@@ -24,6 +24,7 @@ class _CategoriesViewState extends State<CategoriesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Danh Mục',
           style: TextStyle(fontWeight: FontWeight.bold),

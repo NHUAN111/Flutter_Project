@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_specialized_1/model/coupon_model.dart';
 import 'package:project_specialized_1/view_model/coupon_view_model.dart';
+import 'package:project_specialized_1/widgets/toast.dart';
 import 'package:provider/provider.dart';
 
 import '../../constant/constant.dart';
@@ -29,7 +30,7 @@ class _CouponViewState extends State<CouponView> {
   void resetPage() {
     setState(() {
       isChecked = false;
-      Navigator.pop(context);
+      Navigator.pop(context, 2);
     });
   }
 
@@ -113,7 +114,6 @@ class _CouponViewState extends State<CouponView> {
                                     couponStart: item.couponStart,
                                     couponEnd: item.couponEnd,
                                   );
-                                  print('Check coupon luu vao share');
                                   // Khởi tạo SharedPreferences
                                   await SharedPrefsManager.init();
                                   await SharedPrefsManager.setDataCoupon(
@@ -122,7 +122,9 @@ class _CouponViewState extends State<CouponView> {
                                   );
                                   setState(() {
                                     isChecked = value!;
-                                    resetPage(); // Gọi hàm để quay lại trang ban đầu
+                                    BaseToast.showSuccess(context, 'Thành công',
+                                        'Áp dụng mã thành công');
+                                    resetPage();
                                   });
                                 },
                               ),

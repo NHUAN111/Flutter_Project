@@ -30,9 +30,9 @@ class _OrdersProcessPageState extends State<OrdersProcessPage> {
   Future<void> _refreshOrders() async {
     final savedUser = SharedPrefsManager.getData(Constant.USER_PREFERENCES);
     final viewModel = Provider.of<OrdersViewModel>(context, listen: false);
-    setState(() {
-      futureOrders = viewModel.fechOrders(savedUser!.customerId!);
-    });
+    // setState(() {
+    futureOrders = viewModel.fechOrders(savedUser!.customerId!);
+    // });
   }
 
   @override
@@ -46,7 +46,29 @@ class _OrdersProcessPageState extends State<OrdersProcessPage> {
           );
         } else if (snapshot.hasError) {
           return Center(
-            child: Text('Error: ${snapshot.error}'),
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/order.png',
+                width: 160,
+                height: 200,
+              ),
+              const Text(
+                'Chưa có dữ liệu',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ));
+        } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+          return Image.asset(
+            'assets/images/order.png',
+            width: 180,
+            height: 220,
           );
         } else {
           final List<OrdersModel> orders = snapshot.data!;
@@ -203,9 +225,9 @@ class _OrdersProcessPageState extends State<OrdersProcessPage> {
                                         Provider.of<OrdersViewModel>(context,
                                             listen: false);
                                     viewModel.cancelOrder(item.orderCode!);
+                                    _refreshOrders();
                                     BaseToast.showSuccess(context, 'Thành công',
                                         'Hủy đơn thành công');
-                                    _refreshOrders();
                                   }
                                 },
                                 icon: const Icon(

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:project_specialized_1/model/cart_model.dart';
 import 'package:project_specialized_1/view_model/cart_view_model.dart';
@@ -16,18 +18,18 @@ class CartView extends StatefulWidget {
 
 class _CartViewState extends State<CartView> {
   late Future<List<CartModel>> futureCart;
+  late List<CartModel> cartItems = [];
   TextEditingController couponController = TextEditingController();
   double total = 0;
   int countCart = 0;
   bool hasItemsInCart = false;
   bool checkCoupon = false;
   String couponCode = '';
-  late List<CartModel> cartItems = [];
 
   @override
   void initState() {
-    loadCartData();
     super.initState();
+    loadCartData();
   }
 
   void loadCartData() async {
@@ -40,7 +42,13 @@ class _CartViewState extends State<CartView> {
     setState(() {
       cartItems = cartItemsData;
       countCart = cartItems.length;
+      total = calculateTotal(cartItems);
     });
+
+    // TEST
+    String jsonCartList =
+        jsonEncode(cartItems.map((cart) => cart.toJson()).toList());
+    print(jsonCartList);
 
     if (cartItems.isNotEmpty) {
       setState(() {
@@ -71,19 +79,13 @@ class _CartViewState extends State<CartView> {
     final viewModel = Provider.of<CartViewModel>(context, listen: false);
     await viewModel.deleteCart(id, customerId);
     total = calculateTotal(cartItems);
-    loadCartData(); // Cập nhật lại giỏ hàng sau khi xóa mục
+    loadCartData();
   }
 
   Future<void> onUpdateQty(int foodId, int customerId, int quantity) async {
     final viewModel = Provider.of<CartViewModel>(context, listen: false);
     await viewModel.updateCart(foodId, customerId, quantity);
     total = calculateTotal(cartItems);
-    // loadCartData(); // Cập nhật lại giỏ hàng sau khi cập nhật số lượng
-  }
-
-  Future<void> updateCoupon() async {
-    calculateTotal(cartItems);
-    loadCartData();
   }
 
   double calculateTotal(List<CartModel> cartItems) {
@@ -153,8 +155,8 @@ class _CartViewState extends State<CartView> {
                               child: Row(
                                 children: [
                                   Container(
-                                    height: 130,
-                                    width: 140,
+                                    height: 120,
+                                    width: 130,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
                                       image: DecorationImage(
@@ -165,7 +167,7 @@ class _CartViewState extends State<CartView> {
                                   ),
                                   const SizedBox(width: 10),
                                   SizedBox(
-                                    width: 150,
+                                    width: 140,
                                     child: Padding(
                                       padding: const EdgeInsets.only(right: 30),
                                       child: Column(
@@ -294,11 +296,14 @@ class _CartViewState extends State<CartView> {
                         GestureDetector(
                           onTap: () async {
                             if (hasItemsInCart) {
-                              Navigator.pushNamed(context, RoutesName.coupon);
+                              Navigator.pushNamed(context, RoutesName.coupon)
+                                  .then((value) {
+                                loadCartData();
+                              });
+
                               await SharedPrefsManager.init();
                               await SharedPrefsManager.removeData(
                                   Constant.COUPON_PREFERENCES);
-                              updateCoupon();
                             }
                           },
                           child: Text(

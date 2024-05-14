@@ -39,12 +39,21 @@ class _DeliveryViewState extends State<DeliveryView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GestureDetector(
+          child: const Icon(Icons.arrow_back),
+          onTap: () {
+            Navigator.pop(context, 1);
+          },
+        ),
         title: const Text('Địa Chỉ Của Bạn'),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, RoutesName.feeship);
+              Navigator.pushNamed(context, RoutesName.feeship).then((value) {
+                loadData();
+                print(value);
+              });
             },
             icon: const Icon(
               Icons.add,
@@ -120,7 +129,7 @@ class _DeliveryViewState extends State<DeliveryView> {
                                             height: 10,
                                           ),
                                           SizedBox(
-                                            width: 310,
+                                            width: 290,
                                             child: Text(
                                               item.address.toString(),
                                               maxLines: 2,
@@ -169,8 +178,6 @@ class _DeliveryViewState extends State<DeliveryView> {
                                                   Constant.FEESHIP_PREFERENCES,
                                                   feeshipModel,
                                                 );
-                                                print(
-                                                    feeshipModel.customerName);
                                               }
                                               setState(() {
                                                 isChecked = value!;

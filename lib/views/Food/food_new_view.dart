@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:project_specialized_1/constant/constant.dart';
+import 'package:project_specialized_1/data/LocalData/SharedPrefsManager/shared_preferences.dart';
+import 'package:project_specialized_1/model/favourite_model.dart';
 import 'package:project_specialized_1/model/food_model.dart';
+import 'package:project_specialized_1/view_model/favourite_view_model.dart';
 import 'package:project_specialized_1/views/Food/food_detail_view.dart';
 import 'package:project_specialized_1/view_model/food_view_model.dart';
 import 'package:project_specialized_1/widgets/format_price.dart';
+import 'package:project_specialized_1/widgets/toast.dart';
 import 'package:provider/provider.dart';
 
 class FoodNewView extends StatefulWidget {
@@ -75,8 +80,36 @@ class _FoodNewViewState extends State<FoodNewView> {
                             ),
                             child: IconButton(
                               // color: const Color.fromARGB(255, 241, 56, 43),
-                              onPressed: () {
-                                print('${food.foodId}yeu thich');
+                              onPressed: () async {
+                                final savedUser = SharedPrefsManager.getData(
+                                    Constant.USER_PREFERENCES);
+                                final viewModelFavourite =
+                                    Provider.of<FavouriteViewModel>(context,
+                                        listen: false);
+                                FavouriteModel favouriteModel = FavouriteModel(
+                                  customerId: savedUser!.customerId,
+                                  foodId: food.foodId,
+                                  foodName: food.foodName,
+                                  foodPrice: food.foodPrice,
+                                  foodDesc: food.foodDesc,
+                                  foodImg: food.foodImg,
+                                  totalOrders: food.totalOrders,
+                                );
+
+                                bool isExist =
+                                    await viewModelFavourite.checkFavourite(
+                                        food.foodId, savedUser.customerId!);
+                                if (isExist) {
+                                  viewModelFavourite.deleteFavourite(
+                                      food.foodId, savedUser.customerId!);
+                                  BaseToast.showError(context, 'Thành công',
+                                      'Đã xóa khỏi mục yêu thích');
+                                } else {
+                                  viewModelFavourite
+                                      .insertFavourite(favouriteModel);
+                                  BaseToast.showSuccess(context, 'Thành công',
+                                      'Đã thêm vào mục yêu thích');
+                                }
                               },
                               icon: Image.asset(
                                 'assets/images/heart.png',

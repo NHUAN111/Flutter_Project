@@ -30,7 +30,9 @@ class UserModel extends BaseModel {
     return {
       'customer_id': customerId,
       'customer_name': customerName,
+      'customer_email': customerEmail,
       'customer_pass': customerPass,
+      'customer_phone': customerPhone,
     };
   }
 }

@@ -27,11 +27,13 @@ class DatabaseHelperFeeship {
   }
 
   Future<void> _onCreate(Database db, int version) async {
+    // Xóa bảng nếu tồn tại
+    await db.execute('DROP TABLE IF EXISTS feeShip');
     await db.execute('''
       CREATE TABLE feeShip (
         id INTEGER PRIMARY KEY,
         customerId INTEGER,
-        feeship INTEGER,
+        fee_feeship INTEGER,
         address TEXT,
         statusFee INTEGER,
         customerName TEXT,
@@ -55,7 +57,7 @@ class DatabaseHelperFeeship {
     return List.generate(maps.length, (i) {
       return FeeshipModel(
         customerId: maps[i]['customerId'],
-        feeship: maps[i]['feeship'],
+        feeship: maps[i]['fee_feeship'],
         address: maps[i]['address'],
         statusFee: maps[i]['statusFee'],
         customerName: maps[i]['customerName'],
@@ -124,9 +126,9 @@ class DatabaseHelperFeeship {
     }
   }
 
-  Future<void> deleteTable() async {
-    final databasesPath = await getDatabasesPath();
-    final path = join(databasesPath, 'feeship_database.db');
-    await deleteDatabase(path);
-  }
+  // Future<void> deleteTable() async {
+  //   final databasesPath = await getDatabasesPath();
+  //   final path = join(databasesPath, 'new_feeship_database.db');
+  //   await deleteDatabase(path);
+  // }
 }

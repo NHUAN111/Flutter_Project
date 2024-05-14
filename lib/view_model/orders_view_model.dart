@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:project_specialized_1/model/cart_model.dart';
 import 'package:project_specialized_1/model/orders_detail_model.dart';
 import 'package:project_specialized_1/model/orders_model.dart';
+import 'package:project_specialized_1/model/user_model.dart';
 import 'package:project_specialized_1/repository/orders_repository.dart';
 import 'package:toastification/toastification.dart';
 
@@ -44,6 +46,24 @@ class OrdersViewModel with ChangeNotifier {
       notifyListeners();
     } catch (e) {
       print('Error cancel order: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> order(
+      UserModel userModel,
+      String address,
+      int paymentMethod,
+      int couponPrice,
+      String orderCoupon,
+      int orderFeeship,
+      String cartList) async {
+    try {
+      await _repository.order(userModel, address, paymentMethod, couponPrice,
+          orderCoupon, orderFeeship, cartList);
+      notifyListeners();
+    } catch (e) {
+      print('Error order: $e');
       rethrow;
     }
   }

@@ -38,7 +38,29 @@ class _OrdersDeliveryPageState extends State<OrdersDeliveryPage> {
           );
         } else if (snapshot.hasError) {
           return Center(
-            child: Text('Error: ${snapshot.error}'),
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/order.png',
+                width: 160,
+                height: 200,
+              ),
+              const Text(
+                'Chưa có dữ liệu',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ));
+        } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+          return Image.asset(
+            'assets/images/order.png',
+            width: 180,
+            height: 220,
           );
         } else {
           final List<OrdersModel> orders = snapshot.data!;

@@ -46,6 +46,7 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       appBar: _showAppBar
           ? AppBar(
+              automaticallyImplyLeading: false,
               toolbarHeight: 140,
               backgroundColor: const Color.fromARGB(255, 255, 60, 60),
               shape: const RoundedRectangleBorder(

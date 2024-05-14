@@ -38,6 +38,12 @@ class _FeeshipViewState extends State<FeeshipView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GestureDetector(
+          child: const Icon(Icons.arrow_back),
+          onTap: () {
+            Navigator.pop(context, 3);
+          },
+        ),
         title: const Text('Địa Chỉ Nhận Hàng'),
         centerTitle: true,
       ),
@@ -168,7 +174,7 @@ class _FeeshipViewState extends State<FeeshipView> {
                             foregroundColor: Colors.white,
                             backgroundColor:
                                 const Color.fromARGB(255, 241, 56, 43),
-                            minimumSize: const Size(370, 46),
+                            minimumSize: const Size(360, 46),
                             elevation: 3,
                           ),
                           onPressed: () async {
